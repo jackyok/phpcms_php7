@@ -321,6 +321,11 @@ class member extends admin {
 			$basicinfo['mobile'] = $_POST['info']['mobile'];
 			$basicinfo['overduedate'] = strtotime($_POST['info']['overduedate']);
 
+			//VIP过期时间与状态检测
+			if($basicinfo['overduedate'] < SYS_TIME && intval($basicinfo['vip'])) {
+				$basicinfo['vip'] = 0;
+			}
+
 			//会员基本信息
 			$info = $this->_checkuserinfo($basicinfo, 1);
 
