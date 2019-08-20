@@ -715,7 +715,7 @@ class index extends foreground {
 			$updatearr = array('lastip'=>ip(), 'lastdate'=>SYS_TIME);
 			//vip过期，更新vip和会员组
 			if($r['overduedate'] < SYS_TIME) {
-				$updatearr['vip'] = 0;
+				$r['vip'] = $updatearr['vip'] = 0;
 			}		
 
 			//检查用户积分，更新新用户组，除去邮箱认证、禁止访问、游客组用户、vip用户，如果该用户组不允许自助升级则不进行该操作		
