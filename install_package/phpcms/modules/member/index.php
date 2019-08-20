@@ -555,12 +555,16 @@ class index extends foreground {
 			$groupid = isset($_POST['groupid']) ? intval($_POST['groupid']) : showmessage(L('operation_failure'), HTTP_REFERER);
 			
 			$upgrade_type = isset($_POST['upgrade_type']) ? intval($_POST['upgrade_type']) : showmessage(L('operation_failure'), HTTP_REFERER);
-			$upgrade_date = !empty($_POST['upgrade_date']) ? intval($_POST['upgrade_date']) : showmessage(L('operation_failure'), HTTP_REFERER);
+			$upgrade_date = !empty($_POST['upgrade_date']) && intval($_POST['upgrade_date']) ? intval($_POST['upgrade_date']) : showmessage(L('operation_failure'), HTTP_REFERER);
 
 			//消费类型，包年、包月、包日，价格
 			$typearr = array($grouplist[$groupid]['price_y'], $grouplist[$groupid]['price_m'], $grouplist[$groupid]['price_d']);
 			//消费类型，包年、包月、包日，时间
 			$typedatearr = array('366', '31', '1');
+			//检查升级的会员组和资费
+			if(!isset($grouplist[$groupid]) || !isset($typearr[$upgrade_type])) {
+				showmessage(L('operation_failure'), HTTP_REFERER);
+			}
 			//消费的价格
 			$cost = $typearr[$upgrade_type]*$upgrade_date;
 			//购买时间
