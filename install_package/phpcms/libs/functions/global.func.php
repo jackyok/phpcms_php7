@@ -980,6 +980,7 @@ function get_memberinfo_buyusername($username, $field='') {
 function get_memberavatar($uid, $is_userid='', $size='30') {
 	if($is_userid) {
 		$db = pc_base::load_model('member_model');
+		$db->set_model();
 		$memberinfo = $db->get_one(array('userid'=>$uid));
 		if(isset($memberinfo['phpssouid'])) {
 			$uid = $memberinfo['phpssouid'];
