@@ -47,7 +47,7 @@ class image {
     }
     
     function getpercent($srcwidth,$srcheight,$dstw,$dsth) {
-    	if (empty($srcwidth) || empty($srcheight) || ($srcwidth <= $dstW && $srcheight <= $dstH)) $w = $srcwidth ;$h = $srcheight;
+    	if (empty($srcwidth) || empty($srcheight) || ($srcwidth <= $dstw && $srcheight <= $dsth)) $w = $srcwidth ;$h = $srcheight;
     	if ((empty($dstw) || $dstw == 0)  && $dsth > 0 && $srcheight > $dsth) {
 			$h = $dsth;
 			$w = round($dsth / $srcheight * $srcwidth);
@@ -62,8 +62,8 @@ class image {
 					$w = $dstw;
 					$h = round($dstw / $srcwidth * $srcheight );
 			} else {
-				$h = $dstw;
-				$w = $dsth;
+				$h = $dsth;
+				$w = $dstw;
 			}
 		}
 		$array['w']  = $w;
