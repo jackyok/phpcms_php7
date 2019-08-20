@@ -1329,7 +1329,7 @@ class index extends foreground {
 								$groupid = $r['groupid'];
 								$username = $r['username'];
 								$nickname = empty($r['nickname']) ? $username : $r['nickname'];
-								$this->db->update(array('lastip'=>ip(), 'lastdate'=>SYS_TIME, 'nickname'=>$me['name']), array('userid'=>$userid));
+								$this->db->update(array('lastip'=>ip(), 'lastdate'=>SYS_TIME), array('userid'=>$userid));
 								if(!$cookietime) $get_cookietime = param::get_cookie('cookietime');
 								$_cookietime = $cookietime ? intval($cookietime) : ($get_cookietime ? $get_cookietime : 0);
 								$cookietime = $_cookietime ? TIME + $_cookietime : 0;
