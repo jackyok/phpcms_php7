@@ -363,7 +363,8 @@ switch($step)
 		$server_info = mysqli_get_server_info($link);
 		if($server_info < '4.0') exit('6');
 		if(!mysqli_select_db($link,$dbname)) {
-			if(!@mysqli_query($link,"CREATE DATABASE `$dbname`")) exit('3');
+			$default_charset = array('gbk' => 'gbk_chinese_ci', 'utf8' => 'utf8_general_ci', 'latin1' => 'latin1_swedish_ci');
+			if(!@mysqli_query($link, "CREATE DATABASE $dbname".(empty($dbcharset) ? '' : " DEFAULT CHARSET $dbcharset COLLATE ".$default_charset[$dbcharset]))) exit('3');
 			mysqli_select_db($link,$dbname);
 		}
 		$tables = array();
