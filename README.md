@@ -20,4 +20,8 @@ phpcms交流1群：132936228
 9. 【中危】修复利用伪造模板名称生成任意脚本的漏洞
 10. 修复利用构造referer的xss攻击
 
-......
+. . . 
+
+(ps:因为太多就不一一列举了)
+
+[[**点此查看更多**]](https://gitee.com/phpcms/phpcms/commits/master)
