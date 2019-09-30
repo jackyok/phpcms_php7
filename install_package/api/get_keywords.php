@@ -3,36 +3,47 @@
 /**
  * 获取关键字接口
  * @author Snow & Love <phpcms@msn.com>
- * @version 1.0
+ * @version 1.1
  */
 defined('IN_PHPCMS') or exit('No permission resources.');
-define('API_URL_GET_KEYWORDS', 'http://zhannei.baidu.com/api/customsearch/keywords');
+define('API_URL_GET_KEYWORDS', 'https://bosonnlp.com/analysis/key');
 
 $number = intval($_GET['number']);
-$data = $_POST['data'];
-echo get_keywords($data, $number);
+$title = $_POST['data'];
+echo get_keywords($title, $number);
 
-function get_keywords($title, $number = 3) {
+function get_keywords($title, $number = 3)
+{
     $title = trim(strip_tags($title));
     if (empty($title)) {
         return '';
     }
-    $rs = pc_file_get_contents(API_URL_GET_KEYWORDS . '?title=' . urlencode($title), 3);
+    $params = array(
+        'http' => array(
+            'method'  => 'POST',
+            'timeout' => 5,
+            'header'  => "Content-type:application/x-www-form-urlencoded",
+            'content' => http_build_query(array('data' => $title)),
+        )
+    );
+    $rs = file_get_contents(API_URL_GET_KEYWORDS, false, stream_context_create($params));
     if (!$rs) {
         return '';
     }
     $data = json_decode($rs, true);
-    if (!$data || empty($data['result']['res']['keyword_list'])) {
+    if (!$data || empty($data)) {
         return '';
     }
-    if (count($data['result']['res']['keyword_list']) > $number) {
-        $data['result']['res']['keyword_list'] = array_slice($data['result']['res']['keyword_list'], 0, $number);
+    if (function_exists('array_column')) {
+        $keywords = array_column(array_slice($data, 0, $number), 1);
+    } else {
+        foreach (array_slice($data, 0, $number) as $v) {
+            $keywords[] = $v[1];
+        }
     }
     if (CHARSET != 'utf-8') {
-        return iconv('utf-8', 'gbk', implode(' ', $data['result']['res']['keyword_list']));
+        return iconv('utf-8', 'gbk', implode(' ', $keywords));
     } else {
-        return implode(' ', $data['result']['res']['keyword_list']);
+        return implode(' ', $keywords);
     }
 }
-
-?>
