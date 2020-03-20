@@ -41,7 +41,7 @@ class index {
 			unset($data);
 		} 		
 		
-		if (isset($_GET['iframe'])) {
+		if (isset($_GET['ifr'])) {
 			if (strpos($url,APP_PATH) === 0) {
 				$domain = APP_PATH;
 			} else {

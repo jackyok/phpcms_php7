@@ -38,7 +38,7 @@ body{background:none;}
 </form>   
 {pc:comment action="lists" commentid="$commentid" siteid="$siteid" page="$_GET[page]" hot="$hot" num="20"}
 {if !empty($data)}      
-<div class="comment_button"><a href="{APP_PATH}index.php?m=comment&c=index&a=init&commentid={$commentid}&title={urlencode(($comment[title] ? $comment[title] : $title))}&url={urlencode(($comment[url] ? $comment[url] : $url))}&hot=0&iframe=1"{if empty($hot)} class="on"{/if}>最新</a> <a href="{APP_PATH}index.php?m=comment&c=index&a=init&commentid={$commentid}&title={urlencode(($comment[title] ? $comment[title] : $title))}&url={urlencode(($comment[url] ? $comment[url] : $url))}&hot=1&iframe=1"{if $hot} class="on"{/if}>最热</a></div>
+<div class="comment_button"><a href="{APP_PATH}index.php?m=comment&c=index&a=init&commentid={$commentid}&title={urlencode(($comment[title] ? $comment[title] : $title))}&url={urlencode(($comment[url] ? $comment[url] : $url))}&hot=0&ifr=1"{if empty($hot)} class="on"{/if}>最新</a> <a href="{APP_PATH}index.php?m=comment&c=index&a=init&commentid={$commentid}&title={urlencode(($comment[title] ? $comment[title] : $title))}&url={urlencode(($comment[url] ? $comment[url] : $url))}&hot=1&ifr=1"{if $hot} class="on"{/if}>最热</a></div>
     
 <div class="comment">
 {loop $data $r}
