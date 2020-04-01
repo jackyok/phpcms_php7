@@ -30,7 +30,7 @@ class sitemodel_field extends admin {
 			$modelid = $_POST['info']['modelid'] = intval($_POST['info']['modelid']);
 			$model_table = $model_cache[$modelid]['tablename'];
 			
-			$tablename = $_POST['issystem'] ? $this->db->db_tablepre.$model_table : $this->db->db_tablepre.$model_table.'_data';
+			$tablename = $_POST['info']['issystem'] ? $this->db->db_tablepre.$model_table : $this->db->db_tablepre.$model_table.'_data';
 
 			$field = $_POST['info']['field'];
 			$minlength = $_POST['info']['minlength'] ? $_POST['info']['minlength'] : 0;
