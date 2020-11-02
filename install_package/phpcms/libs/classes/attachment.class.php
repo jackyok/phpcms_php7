@@ -242,7 +242,7 @@ class attachment {
 	 * @param $fileext 附件扩展名
 	 */
 	function getname($fileext){
-		return date('Ymdhis').rand(100, 999).'.'.$fileext;
+		return date('YmdHis').rand(100, 999).'.'.$fileext;
 	}
 
 	/**

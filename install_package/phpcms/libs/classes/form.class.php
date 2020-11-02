@@ -54,8 +54,8 @@ class form {
 		$show_page = ($module == 'content' && !$disabled_page) ? 'true' : 'false';
 		$str .="pages:$show_page,subtitle:$show_page,textareaid:'".$textareaid."',module:'".$module."',catid:'".$catid."',\r\n";
 		if($allowupload) {
-			$authkey = upload_key("$allowuploadnum,$alowuploadexts,$allowbrowser");
-			$str .="flashupload:true,alowuploadexts:'".$alowuploadexts."',allowbrowser:'".$allowbrowser."',allowuploadnum:'".$allowuploadnum."',authkey:'".$authkey."',\r\n";
+			$authkey = upload_key("$allowuploadnum,$alowuploadexts,$allowbrowser,0,0,");
+			$str .="h5upload:true,alowuploadexts:'".$alowuploadexts."',allowbrowser:'".$allowbrowser."',allowuploadnum:'".$allowuploadnum."',authkey:'".$authkey."',\r\n";
 		}
         if($allowupload) $str .= "filebrowserUploadUrl : 'index.php?m=attachment&c=attachments&a=upload&module=".$module."&catid=".$catid."&dosubmit=1',\r\n";
 		if($color) {
@@ -69,9 +69,9 @@ class form {
 		$str .= "});\r\n";
 		$str .= '</script>';
 		$ext_str = "<div class='editor_bottom'>";
-		if(!defined('IMAGES_INIT')) {
-			$ext_str .= '<script type="text/javascript" src="'.JS_PATH.'swfupload/swf2ckeditor.js"></script>';
-			define('IMAGES_INIT', 1);
+		if(!defined('UPLOAD_INIT')) {
+			$ext_str .= '<script type="text/javascript" src="'.JS_PATH.'uploadifive/handlers.js"></script>';
+			define('UPLOAD_INIT', 1);
 		}
 		$ext_str .= "<div id='page_title_div'>
 		<table cellpadding='0' cellspacing='1' border='0'><tr><td class='title'>".L('subtitle')."<span id='msg_page_title_value'></span></td><td>
@@ -104,13 +104,13 @@ class form {
 		if(!empty($thumb_setting) && count($thumb_setting)) $thumb_ext = $thumb_setting[0].','.$thumb_setting[1];
 		else $thumb_ext = ',';
 		if(!$alowexts) $alowexts = 'jpg|jpeg|gif|bmp|png';
-		if(!defined('IMAGES_INIT')) {
-			$str = '<script type="text/javascript" src="'.JS_PATH.'swfupload/swf2ckeditor.js"></script>';
-			define('IMAGES_INIT', 1);
+		if(!defined('UPLOAD_INIT')) {
+			$str = '<script type="text/javascript" src="'.JS_PATH.'uploadifive/handlers.js"></script>';
+			define('UPLOAD_INIT', 1);
 		}
 		$value = new_html_special_chars($value);
 		$authkey = upload_key("1,$alowexts,1,$thumb_ext,$watermark_setting");
-		return $str."<input type=\"text\" name=\"$name\" id=\"$id\" value=\"$value\" size=\"$size\" class=\"$class\" $ext/>  <input type=\"button\" class=\"button\" onclick=\"javascript:flashupload('{$id}_images', '".L('attachmentupload')."','{$id}',submit_images,'1,{$alowexts},1,{$thumb_ext},{$watermark_setting}','{$moudle}','{$catid}','{$authkey}')\"/ value=\"".L('imagesupload')."\">";
+		return $str."<input type=\"text\" name=\"$name\" id=\"$id\" value=\"$value\" size=\"$size\" class=\"$class\" $ext/>  <input type=\"button\" class=\"button\" onclick=\"javascript:h5upload('{$id}_images', '".L('attachmentupload')."','{$id}',submit_images,'1,{$alowexts},1,{$thumb_ext},{$watermark_setting}','{$moudle}','{$catid}','{$authkey}')\"/ value=\"".L('imagesupload')."\">";
 	}
 
 	/**
@@ -132,12 +132,12 @@ class form {
 		if(!empty($file_setting) && count($file_setting)) $file_ext = $file_setting[0].','.$file_setting[1];
 		else $file_ext = ',';
 		if(!$alowexts) $alowexts = 'rar|zip';
-		if(!defined('IMAGES_INIT')) {
-			$str = '<script type="text/javascript" src="'.JS_PATH.'swfupload/swf2ckeditor.js"></script>';
-			define('IMAGES_INIT', 1);
+		if(!defined('UPLOAD_INIT')) {
+			$str = '<script type="text/javascript" src="'.JS_PATH.'uploadifive/handlers.js"></script>';
+			define('UPLOAD_INIT', 1);
 		}
-		$authkey = upload_key("1,$alowexts,1,$file_ext");
-		return $str."<input type=\"text\" name=\"$name\" id=\"$id\" value=\"$value\" size=\"$size\" class=\"$class\" $ext/>  <input type=\"button\" class=\"button\" onclick=\"javascript:flashupload('{$id}_files', '".L('attachmentupload')."','{$id}',submit_attachment,'1,{$alowexts},1,{$file_ext}','{$moudle}','{$catid}','{$authkey}')\"/ value=\"".L('filesupload')."\">";
+		$authkey = upload_key("1,$alowexts,1,$file_ext,0");
+		return $str."<input type=\"text\" name=\"$name\" id=\"$id\" value=\"$value\" size=\"$size\" class=\"$class\" $ext/>  <input type=\"button\" class=\"button\" onclick=\"javascript:h5upload('{$id}_files', '".L('attachmentupload')."','{$id}',submit_attachment,'1,{$alowexts},1,{$file_ext},0','{$moudle}','{$catid}','{$authkey}')\"/ value=\"".L('filesupload')."\">";
 	}
 	
 	/**

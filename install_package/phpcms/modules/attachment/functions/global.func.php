@@ -31,63 +31,66 @@
 		$list['local'] = str_replace(array(PC_PATH, DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR), array('',DIRECTORY_SEPARATOR), $filepath);
 		return $list;
 	}
-	
+
 	/**
-	 * flash上传初始化
-	 * 初始化swfupload上传中需要的参数
-	 * @param $module 模块名称
-	 * @param $catid 栏目id
-	 * @param $args 传递参数
-	 * @param $userid 用户id
-	 * @param $groupid 用户组id
-	 * @param $isadmin 是否为管理员模式
+	 * 初始化上传参数
+	 *
+	 * @param string $module
+	 * @param integer $catid
+	 * @param string $args
+	 * @param integer $userid
+	 * @param integer $groupid
+	 * @param integer $isadmin
+	 * @param string $userid_flash
+	 * @return void
 	 */
-	function initupload($module, $catid,$args, $userid, $groupid = '8', $isadmin = '0',$userid_flash='0'){
-		$grouplist = getcache('grouplist','member');
-		if($isadmin==0 && !$grouplist[$groupid]['allowattachment']) return false;
-		extract(getswfinit($args));
+	function init_upload($module, $catid, $args, $userid, $groupid = 8, $isadmin = 0, $userid_flash = '0')
+	{
+		$grouplist = getcache('grouplist', 'member');
+		if ($isadmin == 0 && !$grouplist[$groupid]['allowattachment']) {
+			return false;
+		}
+		$admin_url = pc_base::load_config('system', 'admin_url');
+		$upload_path = $isadmin && !empty($admin_url) ? SITE_PROTOCOL . $admin_url . '/' : APP_PATH;
+		$upload_url = $upload_path.'index.php?m=attachment&c=attachments&a=h5upload&args='.$args.'&authkey='.upload_key($args).'&dosubmit=1';
+		$args_arr = array_combine(array('upload_num', 'allowext', 'isselectimage', 'thumb_width', 'thumb_height', 'watermark'), explode(',', $args));
 		$siteid = param::get_cookie('siteid');
 		$site_setting = get_site_setting($siteid);
-		$file_size_limit = $site_setting['upload_maxsize'];
-		$sess_id = SYS_TIME;
-		$admin_url = pc_base::load_config('system','admin_url');
-		$upload_path = empty($admin_url) ? APP_PATH : SITE_PROTOCOL.$admin_url.'/';
-		$swf_auth_key = md5(pc_base::load_config('system','auth_key').$sess_id);
-		$init =  'var swfu = \'\';
-		$(document).ready(function(){
-		swfu = new SWFUpload({
-			flash_url:"'.JS_PATH.'swfupload/swfupload.swf?"+Math.random(),
-			upload_url:"'.$upload_path.'index.php?m=attachment&c=attachments&a=swfupload&dosubmit=1",
-			file_post_name : "Filedata",
-			post_params:{"SWFUPLOADSESSID":"'.$sess_id.'","module":"'.$module.'","catid":"'.$_GET['catid'].'","userid":"'.$userid.'","siteid":"'.$siteid.'","dosubmit":"1","thumb_width":"'.$thumb_width.'","thumb_height":"'.$thumb_height.'","watermark_enable":"'.$watermark_enable.'","filetype_post":"'.$file_types_post.'","swf_auth_key":"'.$swf_auth_key.'","isadmin":"'.$isadmin.'","groupid":"'.$groupid.'","userid_flash":"'.$userid_flash.'"},
-			file_size_limit:"'.$file_size_limit.'",
-			file_types:"'.$file_types.'",
-			file_types_description:"All Files",
-			file_upload_limit:"'.$file_upload_limit.'",
-			custom_settings : {progressTarget : "fsUploadProgress",cancelButtonId : "btnCancel"},
-	 
-			button_image_url: "",
-			button_width: 75,
-			button_height: 28,
-			button_placeholder_id: "buttonPlaceHolder",
-			button_text_style: "",
-			button_text_top_padding: 3,
-			button_text_left_padding: 12,
-			button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
-			button_cursor: SWFUpload.CURSOR.HAND,
-
-			file_dialog_start_handler : fileDialogStart,
-			file_queued_handler : fileQueued,
-			file_queue_error_handler:fileQueueError,
-			file_dialog_complete_handler:fileDialogComplete,
-			upload_progress_handler:uploadProgress,
-			upload_error_handler:uploadError,
-			upload_success_handler:uploadSuccess,
-			upload_complete_handler:uploadComplete
+		if($args_arr['watermark'] === '') {
+			$args_arr['watermark'] = $site_setting['watermark_enable'];
+		}
+		$output = '
+		var uploadurl = "";
+		$(document).ready(function(){			
+			$("#file_upload").uploadifive({
+				"auto": false,
+				"buttonText" :"",
+				"queueSizeLimit":'.$args_arr['upload_num'].',
+				"fileSizeLimit": '.$site_setting['upload_maxsize'].',
+				"fileType": ".'.(empty($args_arr['allowext']) ? '' : str_replace('|', ',.', $args_arr["allowext"])).'",
+				"uploadLimit" : '.$args_arr['upload_num'].',
+				"formData": {
+					"module" : "'.$module.'",
+					"catid" : "'.$catid.'",
+					"siteid" : "'.$siteid.'",
+					"groupid" : '.$groupid.',
+					"isadmin" : '.$isadmin.',
+					"watermark" : "'.$args_arr["watermark"].'"
+				},
+				"queueID": "h5UploadProgress",
+				"uploadScript": "'.$upload_url.'",
+				"onFallback" : handle_uploadFallback,
+				"onProgress": handle_uploadProgress,
+				"onUploadComplete" : handle_uploadComplete, 
+				"onError": handle_uploadError,
+				"overrideEvents" : ["onError"],
+				"width":75,
+				"height":28
 			});
 		})';
-		return $init;
-	}		
+		return $output;
+	}
+
 	/**
 	 * 获取站点配置信息
 	 * @param  $siteid 站点id
@@ -100,7 +103,7 @@
 	 * 读取swfupload配置类型
 	 * @param array $args flash上传配置信息
 	 */
-	function getswfinit($args) {
+	function parse_upload_args($args) {
 		$siteid = get_siteid();
 		$site_setting = get_site_setting($siteid);
 		$site_allowext = $site_setting['upload_allowext'];
@@ -138,5 +141,3 @@
 		$ext = fileext($file);
 		return in_array($ext,$ext_arr) ? $ext_arr :false;
 	}
-
-?>

@@ -18,11 +18,11 @@
 		<div class="bk10"></div>
 		';
 		
-		if(!defined('IMAGES_INIT')) {
-			$str = '<script type="text/javascript" src="'.JS_PATH.'swfupload/swf2ckeditor.js"></script>';
-			define('IMAGES_INIT', 1);
+		if(!defined('UPLOAD_INIT')) {
+			$str = '<script type="text/javascript" src="'.JS_PATH.'uploadifive/handlers.js"></script>';
+			define('UPLOAD_INIT', 1);
 		}
-		$authkey = upload_key("$upload_number,$upload_allowext,$isselectimage");
-		$string .= $str."<input type=\"button\"  class=\"button\" value=\"".L('multiple_file_list')."\" onclick=\"javascript:flashupload('{$field}_multifile', '".L('attachment_upload')."','{$field}',change_multifile,'{$upload_number},{$upload_allowext},{$isselectimage}','content','$this->catid','{$authkey}')\"/>    <input type=\"button\" class=\"button\" value=\"".L('add_remote_url')."\" onclick=\"add_multifile('{$field}')\">";
+		$authkey = upload_key("$upload_number,$upload_allowext,$isselectimage,,,0");
+		$string .= $str."<input type=\"button\"  class=\"button\" value=\"".L('multiple_file_list')."\" onclick=\"javascript:h5upload('{$field}_multifile', '".L('attachment_upload')."','{$field}',change_multifile,'{$upload_number},{$upload_allowext},{$isselectimage},,,0','content','$this->catid','{$authkey}')\"/>    <input type=\"button\" class=\"button\" value=\"".L('add_remote_url')."\" onclick=\"add_multifile('{$field}')\">";
 		return $string;
 	}

@@ -1,10 +1,9 @@
 <?php $show_header = $show_validator = $show_scroll = 1; include $this->admin_tpl('header', 'attachment');?>
-<link href="<?php echo JS_PATH?>swfupload/swfupload.css" rel="stylesheet" type="text/css" />
-<script language="JavaScript" type="text/javascript" src="<?php echo JS_PATH?>swfupload/swfupload.js"></script>
-<script language="JavaScript" type="text/javascript" src="<?php echo JS_PATH?>swfupload/fileprogress.js"></script>
-<script language="JavaScript" type="text/javascript" src="<?php echo JS_PATH?>swfupload/handlers.js"></script>
+<link href="<?php echo JS_PATH?>uploadifive/uploadifive.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript" type="text/javascript" src="<?php echo JS_PATH?>uploadifive/jquery.uploadifive.min.js"></script>
+<script language="JavaScript" type="text/javascript" src="<?php echo JS_PATH?>uploadifive/handlers.js"></script>
 <script type="text/javascript">
-<?php echo initupload($_GET['module'],$_GET['catid'],$args,$this->userid,$this->groupid,$this->isadmin,$userid_flash)?>
+<?php echo init_upload($_GET['module'], $_GET['catid'], $args, $this->userid, $this->groupid, $this->isadmin, $userid_flash) ?>
 </script>
 <div class="pad-10">
     <div class="col-tab">
@@ -21,19 +20,20 @@
         </ul>
          <div id="div_swf_1" class="content pad-10 <?php echo $div_status?>">
         	<div>
-				<div class="addnew" id="addnew">
-					<span id="buttonPlaceHolder"></span>
+				<div class="addnew">
+					<div id="file_upload"></div>
 				</div>
-				<input type="button" id="btupload" value="<?php echo L('start_upload')?>" onClick="swfu.startUpload();" />
+				<input type="button" id="btupload" value="<?php echo L('start_upload')?>" onClick="$('#file_upload').uploadifive('upload')" />
                 <div id="nameTip" class="onShow"><?php echo L('upload_up_to')?><font color="red"> <?php echo $file_upload_limit?></font> <?php echo L('attachments')?>,<?php echo L('largest')?> <font color="red"><?php echo $file_size_limit?></font></div>
                 <div class="bk3"></div>
 				
                 <div class="lh24"><?php echo L('supported')?> <font style="font-family: Arial, Helvetica, sans-serif"><?php echo str_replace(array('*.',';'),array('','、'),$file_types)?></font> <?php echo L('formats')?></div><input type="checkbox" id="watermark_enable" value="1" <?php if(isset($watermark_enable) &&$watermark_enable == 1) echo 'checked'?> onclick="change_params()"> <?php echo L('watermark_enable')?>
         	</div> 	
-    		<div class="bk10"></div>
-        	<fieldset class="blue pad-10" id="swfupload">
+			<div id="h5UploadError" class="upload-errmsg"></div>
+			<div class="bk10"></div>
+        	<fieldset class="blue pad-10">
         	<legend><?php echo L('lists')?></legend>
-        	<ul class="attachment-list"  id="fsUploadProgress">    
+        	<ul class="attachment-list"  id="h5UploadProgress">    
         	</ul>
     		</fieldset>
     	</div>
@@ -71,7 +71,6 @@
     <div id="att-status" class="hidden"></div>
      <div id="att-status-del" class="hidden"></div>
     <div id="att-name" class="hidden"></div>
-<!-- swf -->
 </div>
 </body>
 <script type="text/javascript">
@@ -105,12 +104,8 @@ function addonlinefile(obj) {
 	$('#att-status').html(strs);
 }
 
-function change_params(){
-	if($('#watermark_enable').attr('checked')) {
-		swfu.addPostParam('watermark_enable', '1');
-	} else {
-		swfu.removePostParam('watermark_enable');
-	}
+function change_params(){	
+	$('#file_upload').data('uploadifive').settings.formData.watermark_enable = $('#watermark_enable').attr('checked') ? 1 : 0;
 }
 function set_iframe(id,src){
 	$("#"+id).attr("src",src); 
@@ -123,7 +118,7 @@ function album_cancel(obj,id,source){
 		var imgstr = $("#att-status").html();
 		var length = $("a[class='on']").children("img").length;
 		var strs = filenames = '';
-		$.get('index.php?m=attachment&c=attachments&a=swfupload_json_del&aid='+id+'&src='+source+'&filename='+filename);
+		$.get('index.php?m=attachment&c=attachments&a=upload_json_del&aid='+id+'&src='+source+'&filename='+filename);
 		for(var i=0;i<length;i++){
 			strs += '|'+$("a[class='on']").children("img").eq(i).attr('path');
 			filenames += '|'+$("a[class='on']").children("img").eq(i).attr('title');
@@ -135,7 +130,7 @@ function album_cancel(obj,id,source){
 		var file_upload_limit = '<?php echo $file_upload_limit?>';
 		if(num > file_upload_limit) {alert('<?php echo L('attachment_tip1')?>'+file_upload_limit+'<?php echo L('attachment_tip2')?>'); return false;}
 		$(obj).addClass("on");
-		$.get('index.php?m=attachment&c=attachments&a=swfupload_json&aid='+id+'&src='+source+'&filename='+filename);
+		$.get('index.php?m=attachment&c=attachments&a=upload_json&aid='+id+'&src='+source+'&filename='+filename);
 		$('#att-status').append('|'+src);
 		$('#att-name').append('|'+filename);
 	}
