@@ -67,7 +67,7 @@
 				"buttonText" :"",
 				"queueSizeLimit":'.$args_arr['upload_num'].',
 				"fileSizeLimit": '.$site_setting['upload_maxsize'].',
-				"fileType": ".'.(empty($args_arr['allowext']) ? '' : str_replace('|', ',.', $args_arr["allowext"])).'",
+				"fileType": "'.(empty($args_arr['allowext']) ? '' : '.'.str_replace('|', ',.', $args_arr["allowext"])).'",
 				"uploadLimit" : '.$args_arr['upload_num'].',
 				"formData": {
 					"module" : "'.$module.'",
