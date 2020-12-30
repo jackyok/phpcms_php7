@@ -43,11 +43,11 @@ class attachments
 		$attachment->set_userid($this->userid);
 		$a = $attachment->upload('upload', $site_allowext);
 		if ($a) {
-			$filepath = $attachment->uploadedfiles[0]['filepath'];
-			$fn = intval($_GET['CKEditorFuncNum']);
-			$this->upload_json($a[0], $filepath, $attachment->uploadedfiles[0]['filename']);
-			$attachment->mkhtml($fn, $this->upload_url . $filepath, '');
+			$res = array('uploaded' => 1, 'fileName' => $attachment->uploadedfiles[0]['filename'], 'url' => $this->upload_url . $attachment->uploadedfiles[0]['filepath']);
+		} else {
+			$res = array('uploaded' => 0, 'error' => array('message' => $attachment->error()));
 		}
+		echo json_encode($res);
 	}
 
 	/**

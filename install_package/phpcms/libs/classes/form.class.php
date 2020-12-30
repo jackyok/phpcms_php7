@@ -16,7 +16,7 @@ class form {
 	public static function editor($textareaid = 'content', $toolbar = 'basic', $module = '', $catid = '', $color = '', $allowupload = 0, $allowbrowser = 1,$alowuploadexts = '',$height = 200,$disabled_page = 0, $allowuploadnum = '10') {
 		$str ='';
 		if(!defined('EDITOR_INIT')) {
-			$str = '<script type="text/javascript" src="'.JS_PATH.'ckeditor/ckeditor.js"></script>';
+			$str = '<script type="text/javascript" src="'.JS_PATH.'ckeditor4/ckeditor.js"></script>';
 			define('EDITOR_INIT', 1);
 		}
 		if($toolbar == 'basic') {
@@ -28,20 +28,17 @@ class form {
 			} else {
 				$toolbar = '[';
 			}
-			$toolbar .= "'-','Templates'],
-		    ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print'],
-		    ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],['ShowBlocks'],['Image','Capture','Flash','flashplayer','MyVideo'],['Maximize'],
+			$toolbar .= " '-', 'Templates'],
+		    [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ],
+			[ 'Find', 'Replace', '-', 'SelectAll', '-', 'Scayt' ],
+			[ 'Image', 'Html5video','Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe' ],
 		    '/',
-		    ['Bold','Italic','Underline','Strike','-'],
-		    ['Subscript','Superscript','-'],
-		    ['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'],
-		    ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
-		    ['Link','Unlink','Anchor'],
-		    ['Table','HorizontalRule','Smiley','SpecialChar','PageBreak'],
+		    [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat' ],
+		    [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
 		    '/',
-		    ['Styles','Format','Font','FontSize'],
-		    ['TextColor','BGColor'],
-		    ['attachment'],\r\n";
+		    [ 'Styles', 'Format', 'Font', 'FontSize' ],
+		    [ 'TextColor', 'BGColor' ],
+		    [ 'Maximize', 'ShowBlocks' ],\r\n";
 		} elseif($toolbar == 'desc') {
 			$toolbar = "['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink', '-', 'Image', '-','Source'],['Maximize'],\r\n";
 		} else {
